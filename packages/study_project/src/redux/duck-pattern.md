@@ -3,14 +3,14 @@
 ## 기본적인 구조
 ```javascript
 /** 
- * 1. rootReducer를 포함하는 index
- * 2. 상태관리로직을 담당하는 reducer(module)들을 포함하는 modules 폴더
+ * 1. 상태관리로직을 담당하는 reducer(module)들을 포함하는 modules 폴더
+ * 2. rootReducer를 포함하는 index
  */ 
 ./src/redux
-├── index
 └── modules
     └── module1
     └── module2
+    └── index
 ```
 
 ### Action (type)
