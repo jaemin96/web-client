@@ -5,6 +5,10 @@ export interface InitialState {
   num: number;
 }
 
+type CounterAction = {
+  type: typeof INCREASE | typeof DECREASE;
+};
+
 // action
 const INCREASE = 'counter/INCREASE';
 const DECREASE = 'counter/DECREASE';
@@ -19,12 +23,12 @@ const initialState: InitialState = {
 };
 
 // reducer
-export default function counter(state = initialState, action: any) {
+export default function counter(state = initialState, action: CounterAction) {
   switch (action.type) {
     case INCREASE:
-      return {};
+      return { num: state.num + 1 };
     case DECREASE:
-      return {};
+      return { num: state.num - 1 };
     default:
       return state;
   }
