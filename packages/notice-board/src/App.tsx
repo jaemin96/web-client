@@ -1,5 +1,12 @@
+import { RecoilRoot } from 'recoil';
+import Counter from './components/counter';
+
 const App = () => {
-  return <></>;
+  return (
+    <RecoilRoot>
+      <Counter />
+    </RecoilRoot>
+  );
 };
 
 export default App;
