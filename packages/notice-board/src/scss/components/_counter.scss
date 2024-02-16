@@ -1,0 +1,41 @@
+.counter {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  &-title {
+    font-size: $--font-lg;
+  }
+  &-count {
+    &::before {
+      content: 'Current Count : ';
+    }
+  }
+  &-double_count {
+    &::before {
+      content: 'Current Count * 2 : ';
+    }
+  }
+  &-btn {
+    display: flex;
+    gap: 0.5rem;
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.3rem;
+      width: 3rem;
+      height: 1.5rem;
+      border: 1px solid $--black;
+
+      &:hover {
+        background-color: $--info-200;
+      }
+    }
+    .increase-btn {
+    }
+    .decrease-btn {
+    }
+  }
+}

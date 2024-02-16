@@ -27,13 +27,17 @@ const Counter = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <h1>Counter</h1>
-      <span>{`current value -- ${count}`}</span>
-      <span>{`value * 2 -- ${doubleCount}`}</span>
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <button onClick={increase}>+</button>
-        <button onClick={decrease}>-</button>
+    <div className="counter">
+      <h1 className="counter-title">Counter</h1>
+      <span className="counter-count">{count}</span>
+      <span className="counter-double_count">{doubleCount}</span>
+      <div className="counter-btn">
+        <button className="increase-btn" onClick={increase}>
+          +
+        </button>
+        <button className="decrease-btn" onClick={decrease}>
+          -
+        </button>
       </div>
     </div>
   );
