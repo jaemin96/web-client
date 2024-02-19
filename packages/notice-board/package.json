@@ -17,16 +17,31 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.16",
+    "@storybook/addon-interactions": "^7.6.16",
+    "@storybook/addon-links": "^7.6.16",
+    "@storybook/addon-onboarding": "^1.0.11",
+    "@storybook/blocks": "^7.6.16",
+    "@storybook/preset-create-react-app": "^7.6.16",
+    "@storybook/react": "^7.6.16",
+    "@storybook/react-webpack5": "^7.6.16",
+    "@storybook/test": "^7.6.16",
     "@testing-library/jest-dom": "^6.4.0",
     "@types/testing-library__jest-dom": "^5.0.0",
+    "eslint-plugin-storybook": "^0.8.0",
     "node-sass": "^9.0.0",
-    "sass": "^1.71.0"
+    "prop-types": "^15.8.1",
+    "sass": "^1.71.0",
+    "storybook": "^7.6.16",
+    "webpack": "^5.90.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "eslintConfig": {
     "extends": [
