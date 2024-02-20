@@ -8,8 +8,10 @@ on:
       - cicd-flow-test
 
 jobs:
-  build:
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout Repository
@@ -20,7 +22,7 @@ jobs:
         run: npm install
 
         # Testing
-      - name: Run Tests
+      - name: Run Test
         run: npm test
 
         # Success test >> building
