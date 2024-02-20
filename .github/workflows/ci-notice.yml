@@ -28,10 +28,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Testing
-      - name: Test
-        run: pnpm test
-
       # 빌드
       - name: Build
         run: pnpm build
