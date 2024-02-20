@@ -3,9 +3,12 @@ import Counter from './components/counter';
 
 const App = () => {
   return (
-    <RecoilRoot>
-      <Counter />
-    </RecoilRoot>
+    <>
+      <h1>hello</h1>
+      <RecoilRoot>
+        <Counter />
+      </RecoilRoot>
+    </>
   );
 };
 
