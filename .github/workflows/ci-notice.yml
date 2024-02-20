@@ -13,19 +13,19 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
         # Install Package dependencies
       - name: Install Dependencies
-        run: pnpm install
+      - run: pnpm install
 
         # Testing
       - name: Run Test
-        run: pnpm test
+      - run: pnpm test
 
         # Success test >> building
       - name: Build
-        run: pnpm run build
+      - run: pnpm run build
 
         # TODO deploy
       - name: Deploy
