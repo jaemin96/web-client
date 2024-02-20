@@ -1,6 +1,5 @@
-name: deploy workflow
+name: Notice-board Package deploy workflow
 
-# 이벤트 감지 (main branch에 push가 되면)
 on:
   push:
     branches:
@@ -10,10 +9,29 @@ on:
 
 # 그에 따른 수행
 jobs:
-  build-and-deploy:
+  job_compute_diff:
+    name: Compute file diff
     runs-on: ubuntu-latest # workflow 실행환경 - ubuntu (macos & window 대체 가능)
     steps:
-      - uses: actions/checkout@v2 # 깃 소스코드 clone 수행
+      - uses: actions/checkout@v3 # 깃 소스코드 clone 수행
+      - name: Compute diff
+        uses: dorny/paths-filter@v2
+        id: compute_diff
+        with:
+          filters: |
+            files:
+              - 'packages/notice-board/**'
+
+    outputs:
+      files: ${{ steps.compute_diff.outputs.files }}
+
+  job_build:
+    name: Build A
+    runs-on: ubuntu-latest
+    needs: [job_compute_diff]
+    if: ${{ needs.job_compute_diff.outputs.files == 'true' }}
+
+    steps:
       # node 설치
       - name: Set Node.js
         uses: actions/setup-node@v2
