@@ -22,7 +22,7 @@ jobs:
 
       # 개발환경 PM이 yarn 이므로 yarn 설치 플로우 추가
       - name: Install pnpm
-        run: npm install -g yarn
+        run: npm install -g pnpm
 
       # 의존성 패키지 설치
       - name: Install dependencies
