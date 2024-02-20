@@ -1,5 +1,6 @@
-name: Packages - Notice Board CI/CD pipeline
+name: deploy workflow
 
+# 이벤트 감지 (main branch에 push가 되면)
 on:
   push:
     branches:
@@ -7,25 +8,30 @@ on:
       - notice-dev
       - cicd-flow-test
 
+# 그에 따른 수행
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  build-and-deploy:
+    runs-on: ubuntu-latest # workflow 실행환경 - ubuntu (macos & window 대체 가능)
     steps:
-      - name: Checkout Repository
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2 # 깃 소스코드 clone 수행
+      # node 설치
+      - name: Set Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.15.1' # 현재 개발에 사용되는 노드버전 기재함.
 
-        # Install Package dependencies
-      - name: Install Dependencies
-      - run: pnpm install
+      # 개발환경 PM이 yarn 이므로 yarn 설치 플로우 추가
+      - name: Install pnpm
+        run: npm install -g yarn
 
-        # Testing
-      - name: Run Test
-      - run: pnpm test
+      # 의존성 패키지 설치
+      - name: Install dependencies
+        run: pnpm install
 
-        # Success test >> building
+      # Testing
+      - name: Test
+        run: pnpm test
+
+      # 빌드
       - name: Build
-      - run: pnpm run build
-
-        # TODO deploy
-      - name: Deploy
+        run: pnpm build
