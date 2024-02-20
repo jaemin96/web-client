@@ -15,17 +15,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Install Package dependencies
+        # Install pnpm
+      - name: Install pnpm
+        run: |
+          curl -L https://unpkg.com/@pnpm/self-installer | node
+
+        # Install Package dependencies
       - name: Install Dependencies
         run: pnpm install
 
-      # Testing
+        # Testing
       - name: Run Tests
         run: pnpm test
 
-      # Success test >> building
+        # Success test >> building
       - name: Build
         run: pnpm run build
 
-      # TODO deploy
+        # TODO deploy
       - name: Deploy
