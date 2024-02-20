@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - notice-dev
+      - cicd-flow-test
 
 jobs:
   build:
