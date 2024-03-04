@@ -1,10 +1,19 @@
+import { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
-import Counter from './components/counter';
+
+const Counter = lazy(() => import('./components/counter'));
 
 const App = () => {
   return (
     <RecoilRoot>
-      <Counter />
+      <Router>
+        <Suspense fallback={<div>...loading</div>}>
+          <Routes>
+            <Route path="/counter" element={<Counter />} />
+          </Routes>
+        </Suspense>
+      </Router>
     </RecoilRoot>
   );
 };
