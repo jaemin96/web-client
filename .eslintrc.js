@@ -27,6 +27,7 @@ module.exports = {
         quoteProps: 'as-needed',
         printWidth: 120,
         htmlWhitespaceSensitivity: 'css',
+        endOfLine: 'auto',
       },
     ],
   },
