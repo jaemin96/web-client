@@ -1,7 +1,9 @@
 function App() {
   return (
     <>
-      <div>hello</div>
+      <div className="bg-brand-blue text-black p-4">
+        Brand Blue Test
+      </div>
     </>
   );
 }

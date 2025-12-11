@@ -63,6 +63,9 @@ importers:
       '@wc/prettier-config':
         specifier: workspace:*
         version: link:../../packages/config/prettier-config
+      '@wc/tailwind-config':
+        specifier: workspace:*
+        version: link:../../packages/config/tailwind-config
       '@wc/tsconfig':
         specifier: workspace:*
         version: link:../../packages/config/tsconfig
