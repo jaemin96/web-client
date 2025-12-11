@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   theme: {
     extend: {
       colors: {
@@ -10,4 +10,4 @@ module.exports = {
     }
   },
   plugins: []
-}
+};

@@ -1,4 +1,4 @@
 {
-  "extends": "@wc/tsconfig/react.json",
+  "extends": "@wc/tsconfig/react",
   "include": ["src"]
 }
