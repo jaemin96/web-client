@@ -1,16 +1,13 @@
-import tseslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import reactPlugin from "eslint-plugin-react";
+const tseslint = require("@typescript-eslint/eslint-plugin");
+const tsParser = require("@typescript-eslint/parser");
+const reactPlugin = require("eslint-plugin-react");
+const prettierPlugin = require("eslint-plugin-prettier");
+const eslintConfigPrettier = require("eslint-config-prettier");
 
-import prettierPlugin from "eslint-plugin-prettier";
-import eslintConfigPrettier from "eslint-config-prettier";
+const prettierConfig = require("@wc/prettier-config");
 
-import prettierConfig from "@wc/prettier-config"; 
-
-export default [
-  // prettier-config disables ESLint rules that conflict with Prettier
+module.exports = [
   eslintConfigPrettier,
-
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     ignores: ["dist/**"],
@@ -31,14 +28,9 @@ export default [
     },
 
     rules: {
-      // Recommended rules
       ...tseslint.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
-
-      // Prettier as ESLint rule
       "prettier/prettier": ["error", prettierConfig],
-
-      // Custom rules
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/ban-ts-comment": "off"
