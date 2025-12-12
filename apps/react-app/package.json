@@ -18,11 +18,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",
-    "autoprefixer": "^10",
     "vite": "^7.2.4",
     "@wc/tsconfig": "workspace:*",
     "@wc/eslint-config": "workspace:*",
-    "@wc/prettier-config": "workspace:*",
-    "@wc/tailwind-config": "workspace:*"
+    "@wc/prettier-config": "workspace:*"
   }
 }
