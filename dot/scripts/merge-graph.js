@@ -90,24 +90,26 @@ turboGraph.replace(/"([^"]+)"/g, (_, node) => {
   if (node !== "true" && node !== "root") nodeSet.add(node);
 });
 
-let nodeDefs = "";
+let rootNodes = "";
+let packageNodes = "";
+let appNodes = "";
 
 for (const n of nodeSet) {
   if (n === "true" || n === "root") continue;
 
   if (n.endsWith("___ROOT___")) {
-    nodeDefs += `"${n}" [fillcolor="#007acc", fontcolor="white", style="filled,rounded", penwidth=3];\n`;
+    rootNodes += `"${n}" [fillcolor="#007acc", fontcolor="white", style="filled,rounded", penwidth=3];\n`;
   } else if (n.startsWith("[root] @wc/")) {
-    nodeDefs += `"${n}" [fillcolor="#33383e", fontcolor="white", style="filled,rounded", penwidth=1.5];\n`;
+    packageNodes += `"${n}" [fillcolor="#33383e", fontcolor="white", style="filled,rounded", penwidth=1.5];\n`;
   } else if (apps.some(a => n.startsWith(`[root] ${a}#build`))) {
-    nodeDefs += `"${n}" [fillcolor="#004e8c", fontcolor="white", style="filled,rounded", penwidth=2];\n`;
+    appNodes += `"${n}" [fillcolor="#004e8c", fontcolor="white", style="filled,rounded", penwidth=2];\n`;
   } else {
-    nodeDefs += `"${n}" [fillcolor="#005f9e", fontcolor="white", style="filled,rounded", penwidth=2];\n`;
+    rootNodes += `"${n}" [fillcolor="#005f9e", fontcolor="white", style="filled,rounded", penwidth=2];\n`;
   }
 }
 
 // -------------------------
-// 최종 DOT 구성
+// 최종 DOT 구성 (클러스터 래핑)
 // -------------------------
 const finalGraph = `
 digraph {
@@ -116,12 +118,28 @@ digraph {
 
 ${baseStyle}
 
+// -------------------------
+// Root 클러스터
 subgraph cluster_root {
     label="${rootLabel}";
+    labelloc=t;      
+    labeljust=l; 
+${rootNodes}
 
-${nodeDefs}
+// -------------------------
+// Packages 클러스터
+subgraph cluster_packages {
+    label="Packages";
+${packageNodes}
+}
 
-// 원본 엣지 그대로
+// -------------------------
+// Apps 클러스터
+subgraph cluster_apps {
+    label="Apps";
+${appNodes}
+}
+
 ${turboGraph}
 }
 }

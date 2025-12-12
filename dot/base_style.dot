@@ -3,7 +3,7 @@
         bgcolor="#1e1e1e",
         fontcolor="white",
         fontsize=14,
-        rankdir="LR",
+        rankdir="LR", // 레이아웃 배치 ("LR" OR "TB")
         pad=1.0
     ];
 
