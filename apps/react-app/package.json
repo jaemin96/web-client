@@ -21,6 +21,7 @@
     "vite": "^7.2.4",
     "@wc/tsconfig": "workspace:*",
     "@wc/eslint-config": "workspace:*",
-    "@wc/prettier-config": "workspace:*"
+    "@wc/prettier-config": "workspace:*",
+    "@weaw/design": "workspace:*"
   }
 }
