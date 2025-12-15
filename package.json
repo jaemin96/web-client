@@ -1,14 +1,13 @@
 {
   "name": "web-client",
   "private": true,
-    "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format",
-
-    "graph:turbo": "node -e \"const fs=require('fs'); const path=require('path'); const { execSync } = require('child_process'); const rawDir=path.resolve('dot/raw'); fs.mkdirSync(rawDir, { recursive: true }); const pkg=JSON.parse(fs.readFileSync('package.json','utf8')); const name=pkg.name.replace(/[@\\/]/g,'_'); const ts=new Date().toISOString().replace(/[-:]/g,'').replace(/\\..+/, ''); const outPath=path.join(rawDir, `${name}_${ts}.dot`); const stdout=execSync('npx turbo run build --graph', { encoding: 'utf8' }); fs.writeFileSync(outPath, stdout);\"",
+    "graph:turbo": "node dot/scripts/gen-turbo-graph.js",
     "graph:merge": "node dot/scripts/merge-graph.js",
     "graph": "pnpm run graph:turbo && pnpm run graph:merge"
   },

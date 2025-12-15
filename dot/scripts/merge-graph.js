@@ -1,7 +1,5 @@
-#!/usr/bin/env node
-
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
 // -------------------------
 // 경로 설정
@@ -18,7 +16,9 @@ fs.mkdirSync(finalDir, { recursive: true });
 // -------------------------
 // base 스타일 읽기
 // -------------------------
-const baseStyle = fs.existsSync(baseStylePath) ? fs.readFileSync(baseStylePath, "utf8") : "";
+const baseStyle = fs.existsSync(baseStylePath)
+  ? fs.readFileSync(baseStylePath, "utf8")
+  : "";
 
 // -------------------------
 // 루트 라벨용 이름 읽기
@@ -53,9 +53,13 @@ function getAllPackages(dir) {
 // -------------------------
 // raw 폴더 최신 파일 선택
 // -------------------------
-const rawFiles = fs.readdirSync(rawDir)
-  .filter(f => f.endsWith(".dot"))
-  .map(f => ({ name: f, time: fs.statSync(path.join(rawDir, f)).mtime.getTime() }))
+const rawFiles = fs
+  .readdirSync(rawDir)
+  .filter((f) => f.endsWith(".dot"))
+  .map((f) => ({
+    name: f,
+    time: fs.statSync(path.join(rawDir, f)).mtime.getTime(),
+  }))
   .sort((a, b) => b.time - a.time);
 
 if (rawFiles.length === 0) {
@@ -68,7 +72,10 @@ const turboGraphPath = path.join(rawDir, latestRaw.name);
 let turboGraph = fs.readFileSync(turboGraphPath, "utf8").trim();
 
 // 중첩 digraph 제거 (터보레포 출력 안쪽 내용만 사용)
-turboGraph = turboGraph.replace(/^digraph\s*{/, "").replace(/}$/, "").trim();
+turboGraph = turboGraph
+  .replace(/^digraph\s*{/, "")
+  .replace(/}$/, "")
+  .trim();
 
 // -------------------------
 // apps / packages 읽기
@@ -77,7 +84,9 @@ const appsDir = path.resolve("apps");
 const packagesDir = path.resolve("packages");
 
 const apps = fs.existsSync(appsDir)
-  ? fs.readdirSync(appsDir).filter(f => fs.statSync(path.join(appsDir, f)).isDirectory())
+  ? fs
+      .readdirSync(appsDir)
+      .filter((f) => fs.statSync(path.join(appsDir, f)).isDirectory())
   : [];
 
 const packages = fs.existsSync(packagesDir) ? getAllPackages(packagesDir) : [];
@@ -101,7 +110,7 @@ for (const n of nodeSet) {
     rootNodes += `"${n}" [fillcolor="#007acc", fontcolor="white", style="filled,rounded", penwidth=3];\n`;
   } else if (n.startsWith("[root] @wc/")) {
     packageNodes += `"${n}" [fillcolor="#33383e", fontcolor="white", style="filled,rounded", penwidth=1.5];\n`;
-  } else if (apps.some(a => n.startsWith(`[root] ${a}#build`))) {
+  } else if (apps.some((a) => n.startsWith(`[root] ${a}#build`))) {
     appNodes += `"${n}" [fillcolor="#004e8c", fontcolor="white", style="filled,rounded", penwidth=2];\n`;
   } else {
     rootNodes += `"${n}" [fillcolor="#005f9e", fontcolor="white", style="filled,rounded", penwidth=2];\n`;
