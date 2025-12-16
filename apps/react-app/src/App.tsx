@@ -1,12 +1,7 @@
-import { Button } from "@weaw/design";
-
 function App() {
   return (
     <>
-      <div className="bg-brand-blue text-black p-4">
-        Brand Blue Test
-      </div>
-      <Button>hello</Button>
+      <h1 className="text-blue-950 text-2xl">Hello, World!</h1>
     </>
   );
 }

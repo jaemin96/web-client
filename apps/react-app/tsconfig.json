@@ -1,4 +1,10 @@
 {
   "extends": "@wc/tsconfig/react",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
 }

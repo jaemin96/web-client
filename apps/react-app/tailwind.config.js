@@ -1,11 +1,9 @@
-import type { Config } from "tailwindcss";
-import preset from "../../packages/design-system/tailwind.preset";
+// import preset from "../../packages/design/tailwind.preset";
 
-const config: Config = {
+const config = {
   presets: [preset],
-  content: [
-    "./src/**/*.{ts,tsx}",
-    "../../packages/weaw-design/src/**/*.{ts,tsx}",
+  content: ["./src/**/*.{ts,tsx}"
+    // , "../../packages/design/src/**/*.{ts,tsx}"
   ],
 };
 

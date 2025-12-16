@@ -163,6 +163,12 @@ importers:
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.2.3)
+      react:
+        specifier: ^18 || ^19
+        version: 19.2.3
+      react-dom:
+        specifier: ^18 || ^19
+        version: 19.2.3(react@19.2.3)
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
