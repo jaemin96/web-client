@@ -4,7 +4,6 @@ import { RevenueChart } from "@/components/dashboard/charts/revenue-chart"
 import { UserActivityChart } from "@/components/dashboard/charts/user-activity-chart"
 import { SalesBreakdownChart } from "@/components/dashboard/charts/sales-breakdown-chart"
 import { DataTable } from "@/components/dashboard/data-table"
-import { AIChatbot } from "@/components/dashboard/ai-chatbot"
 
 export default function DashboardPage() {
   return (
@@ -35,8 +34,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* AI Chatbot */}
-      <AIChatbot />
     </DashboardLayout>
   )
 }

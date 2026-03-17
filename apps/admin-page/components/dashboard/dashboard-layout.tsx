@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { Sidebar } from "./sidebar"
 import { Header } from "./header"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { PluginRenderer } from "@/plugins/plugin-renderer"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -68,6 +69,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       >
         <div className="p-4 lg:p-6">{children}</div>
       </main>
+      <PluginRenderer slot="floating-widget" />
     </div>
   )
 }
