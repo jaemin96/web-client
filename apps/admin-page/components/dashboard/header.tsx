@@ -89,7 +89,11 @@ export function Header({ sidebarCollapsed, onMenuClick }: HeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          onClick={() => {
+            document.documentElement.classList.add("theme-transitioning")
+            setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            setTimeout(() => document.documentElement.classList.remove("theme-transitioning"), 100)
+          }}
           className="text-muted-foreground hover:text-foreground"
         >
           {mounted && resolvedTheme === "dark" ? (

@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useThemeColors } from "@/contexts/theme-context"
-import { MessageCircle, X, Send, Sparkles, User, Loader2, Palette, Check } from "lucide-react"
+import { MessageCircle, X, Send, Sparkles, User, Loader2, Palette } from "lucide-react"
 
 interface ThemeColors {
   primary?: string | null
@@ -169,21 +169,12 @@ export function AIChatbot() {
                         )
                       )}
                       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                      {toolParts.map((part: any, i: number) => (
-                        <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-xs">
-                          {part.state === "output-available" ? (
-                            <>
-                              <Check className="h-3 w-3 text-primary" />
-                              <span className="text-primary">테마 적용 완료</span>
-                            </>
-                          ) : (
-                            <>
-                              <Loader2 className="h-3 w-3 animate-spin" />
-                              <span>테마 적용 중...</span>
-                            </>
-                          )}
+                      {toolParts.some((p: any) => p.state !== "output-available") && (
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-xs">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <span>테마 적용 중...</span>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 )
