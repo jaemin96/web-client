@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport, type UIMessage } from "ai"
+import { DefaultChatTransport } from "ai"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -10,24 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useThemeColors } from "@/contexts/theme-context"
-import {
-  MessageCircle,
-  X,
-  Send,
-  Sparkles,
-  User,
-  Loader2,
-  Palette,
-  Check,
-} from "lucide-react"
-
-function getUIMessageText(msg: UIMessage): string {
-  if (!msg.parts || !Array.isArray(msg.parts)) return ""
-  return msg.parts
-    .filter((p): p is { type: "text"; text: string } => p.type === "text")
-    .map((p) => p.text)
-    .join("")
-}
+import { MessageCircle, X, Send, Sparkles, User, Loader2, Palette, Check } from "lucide-react"
 
 interface ThemeColors {
   primary?: string | null
@@ -47,36 +30,38 @@ export function AIChatbot() {
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
-    onToolCall({ toolCall }) {
-      if (toolCall.dynamic) return
-
-      if (toolCall.toolName === "setThemeColors") {
-        const colors = toolCall.args as ThemeColors
-        
-        // Apply theme colors
-        const themeUpdate: Record<string, string> = {}
-        if (colors.primary) themeUpdate.primary = colors.primary
-        if (colors.secondary) themeUpdate.secondary = colors.secondary
-        if (colors.accent) themeUpdate.accent = colors.accent
-        if (colors.background) themeUpdate.background = colors.background
-        if (colors.foreground) themeUpdate.foreground = colors.foreground
-        if (colors.card) themeUpdate.card = colors.card
-        if (colors.border) themeUpdate.border = colors.border
-        
-        if (Object.keys(themeUpdate).length > 0) {
-          setColors(themeUpdate)
-        }
-      }
-    },
   })
 
-  const isLoading = status === "streaming" || status === "submitted"
+  // messages에서 tool output 감지 → 테마 적용
+  useEffect(() => {
+    for (const msg of messages) {
+      if (msg.role !== "assistant") continue
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      for (const part of (msg.parts ?? []) as any[]) {
+        if (part.type !== "tool-setThemeColors") continue
+        if (part.state !== "output-available") continue
+
+        const colors: ThemeColors = part.output?.colors ?? {}
+        const update: Record<string, string> = {}
+        if (colors.primary) update.primary = colors.primary
+        if (colors.secondary) update.secondary = colors.secondary
+        if (colors.accent) update.accent = colors.accent
+        if (colors.background) update.background = colors.background
+        if (colors.foreground) update.foreground = colors.foreground
+        if (colors.card) update.card = colors.card
+        if (colors.border) update.border = colors.border
+        if (Object.keys(update).length > 0) setColors(update)
+      }
+    }
+  }, [messages, setColors])
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages])
+
+  const isLoading = status === "streaming" || status === "submitted"
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,7 +72,6 @@ export function AIChatbot() {
 
   return (
     <>
-      {/* Floating Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
@@ -96,14 +80,9 @@ export function AIChatbot() {
         )}
         size="icon"
       >
-        {isOpen ? (
-          <X className="h-6 w-6" />
-        ) : (
-          <MessageCircle className="h-6 w-6" />
-        )}
+        {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
       </Button>
 
-      {/* Chat Window */}
       <div
         className={cn(
           "fixed bottom-24 right-6 z-50 w-[380px] transition-all duration-300 origin-bottom-right",
@@ -118,7 +97,7 @@ export function AIChatbot() {
             </div>
             <div className="flex-1">
               <h3 className="font-semibold">AI Assistant</h3>
-              <p className="text-xs text-muted-foreground">Ask me to customize your theme</p>
+              <p className="text-xs text-muted-foreground">테마를 자유롭게 바꿔보세요</p>
             </div>
           </div>
 
@@ -131,20 +110,18 @@ export function AIChatbot() {
                     <Palette className="h-8 w-8 text-primary" />
                   </div>
                   <p className="text-sm text-muted-foreground max-w-[240px]">
-                    Hi! I can help you customize your dashboard theme. Try asking me to change colors!
+                    어떤 느낌의 테마로 바꿀지 자유롭게 말해보세요!
                   </p>
                   <div className="flex flex-wrap gap-2 mt-4 justify-center">
-                    {["Ocean theme", "Sunset colors", "Forest green", "Purple vibes"].map((suggestion) => (
+                    {["더 푸르게", "네온 그린", "미니멀하게", "따뜻한 느낌"].map((s) => (
                       <Button
-                        key={suggestion}
+                        key={s}
                         variant="outline"
                         size="sm"
                         className="text-xs"
-                        onClick={() => {
-                          sendMessage({ text: `Change my theme to ${suggestion.toLowerCase()}` })
-                        }}
+                        onClick={() => sendMessage({ text: s })}
                       >
-                        {suggestion}
+                        {s}
                       </Button>
                     ))}
                   </div>
@@ -152,60 +129,61 @@ export function AIChatbot() {
               )}
 
               {messages.map((message) => {
-                const text = getUIMessageText(message)
                 const isUser = message.role === "user"
-                
-                // Check for tool calls in parts
-                const toolCalls = message.parts?.filter(
-                  (p) => p.type === "tool-invocation"
-                )
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const parts: any[] = message.parts ?? []
+
+                // parts가 없는 경우 content 필드로 폴백
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const rawContent = (message as any).content
+                const fallbackText = typeof rawContent === "string" ? rawContent : null
+
+                const textParts = parts.filter((p) => p.type === "text" && p.text)
+                const toolParts = parts.filter((p) => p.type === "tool-setThemeColors")
+                const hasContent = textParts.length > 0 || toolParts.length > 0 || fallbackText
+
+                if (!hasContent) return null
 
                 return (
                   <div key={message.id} className={cn("flex gap-3", isUser && "flex-row-reverse")}>
                     <Avatar className="h-8 w-8 shrink-0">
-                      <AvatarFallback className={cn(
-                        isUser ? "bg-secondary" : "bg-primary text-primary-foreground"
-                      )}>
+                      <AvatarFallback className={cn(isUser ? "bg-secondary" : "bg-primary text-primary-foreground")}>
                         {isUser ? <User className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
                       </AvatarFallback>
                     </Avatar>
                     <div className={cn("flex flex-col gap-1 max-w-[280px]", isUser && "items-end")}>
-                      {text && (
-                        <div
-                          className={cn(
-                            "rounded-2xl px-4 py-2 text-sm",
-                            isUser
-                              ? "bg-primary text-primary-foreground rounded-br-md"
-                              : "bg-muted rounded-bl-md"
-                          )}
-                        >
-                          {text}
-                        </div>
-                      )}
-                      {toolCalls?.map((tc: { type: string; toolInvocation?: { toolCallId: string; toolName: string; state: string } }) => {
-                        if (tc.type !== "tool-invocation") return null
-                        const invocation = tc.toolInvocation
-                        if (!invocation) return null
-                        
-                        return (
+                      {(textParts.length > 0 ? textParts : fallbackText ? [{ text: fallbackText }] : []).map(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (part: any, i: number) => (
                           <div
-                            key={invocation.toolCallId}
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-xs"
-                          >
-                            {invocation.state === "output-available" ? (
-                              <>
-                                <Check className="h-3 w-3 text-primary" />
-                                <span className="text-primary">Theme updated</span>
-                              </>
-                            ) : (
-                              <>
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                                <span>Applying theme...</span>
-                              </>
+                            key={i}
+                            className={cn(
+                              "rounded-2xl px-4 py-2 text-sm",
+                              isUser
+                                ? "bg-primary text-primary-foreground rounded-br-md"
+                                : "bg-muted rounded-bl-md"
                             )}
+                          >
+                            {part.text}
                           </div>
                         )
-                      })}
+                      )}
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                      {toolParts.map((part: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-xs">
+                          {part.state === "output-available" ? (
+                            <>
+                              <Check className="h-3 w-3 text-primary" />
+                              <span className="text-primary">테마 적용 완료</span>
+                            </>
+                          ) : (
+                            <>
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                              <span>테마 적용 중...</span>
+                            </>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )
@@ -232,13 +210,12 @@ export function AIChatbot() {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a message..."
+                placeholder="어떤 느낌으로 바꿀까요?"
                 className="flex-1"
                 disabled={isLoading}
               />
               <Button type="submit" size="icon" disabled={!input.trim() || isLoading}>
                 <Send className="h-4 w-4" />
-                <span className="sr-only">Send message</span>
               </Button>
             </div>
           </form>

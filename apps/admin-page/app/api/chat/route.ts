@@ -1,30 +1,29 @@
 import { streamText, tool, convertToModelMessages } from "ai"
+import { groq } from "@ai-sdk/groq"
 import { z } from "zod"
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
 
   const result = streamText({
-    model: "openai/gpt-4o-mini",
-    system: `You are an AI assistant for an admin dashboard. You help users customize the dashboard theme and answer questions about the dashboard features.
+    model: groq("llama-3.3-70b-versatile"),
+    system: `You are an AI UI Customizer for this admin dashboard.
 
-When users ask to change colors or theme, use the setThemeColors tool with appropriate color values.
+Step 1: When a user describes any mood, vibe, feeling, color, or style in any language, call the setThemeColors tool ONCE with appropriate oklch colors.
+Step 2: After calling the tool, reply with a short friendly message describing what you changed. Do NOT call the tool again.
 
-Color guidelines:
-- Use valid CSS color values (hex, rgb, oklch, hsl)
-- Primary colors should be vibrant but professional
-- Suggest harmonious color combinations
-- Dark mode backgrounds should be dark (oklch with low lightness)
-- Light mode backgrounds should be light (oklch with high lightness)
+oklch format: oklch(lightness chroma hue)
+- dark background: oklch(0.10~0.15 0.005~0.02 hue)
+- light background: oklch(0.92~0.98 0.005~0.02 hue)
+- primary accent: oklch(0.65~0.85 0.15~0.28 hue)
+- foreground for dark bg: oklch(0.95 0 0)
+- foreground for light bg: oklch(0.10 0 0)
 
-You can help users with:
-1. Changing the dashboard theme colors
-2. Explaining dashboard features
-3. Providing tips for using the dashboard
-4. Answering general questions
+Hue reference: 160=green, 230=blue, 30=orange, 300=purple, 80=yellow, 0=red
 
-Be helpful, concise, and friendly. When suggesting colors, explain your choices briefly.`,
+Reply in the same language the user used.`,
     messages: await convertToModelMessages(messages),
+    maxSteps: 3,
     tools: {
       setThemeColors: tool({
         description: "Set the theme colors for the dashboard. Call this when the user wants to change colors or theme.",
@@ -38,14 +37,7 @@ Be helpful, concise, and friendly. When suggesting colors, explain your choices 
           border: z.string().nullable().describe("Border color"),
           description: z.string().describe("Brief description of the theme change"),
         }),
-        execute: async (params) => {
-          // This will be handled client-side via tool call
-          return {
-            success: true,
-            message: `Theme updated: ${params.description}`,
-            colors: params,
-          }
-        },
+        execute: async (params) => ({ success: true, colors: params }),
       }),
     },
   })
